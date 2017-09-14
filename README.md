@@ -1,5 +1,5 @@
-# harry_potter_word_vectors
-Visualization of Words in Harry Potter using Word2Vec
+# HarryPotter2Vec
+Visualization of the words in Harry Potter using Word2Vec
 
 This project contains two key components. 
 
