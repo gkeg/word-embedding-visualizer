@@ -58,7 +58,7 @@ downsampling = 1e-3
 # Seed for the RNG, to make the results reproducible.
 seed = 1
 
-hp2vec = w2v.Word2Vec(
+vec_model = w2v.Word2Vec(
     sg=1,
     seed=seed,
     workers=num_workers,
@@ -68,36 +68,38 @@ hp2vec = w2v.Word2Vec(
     sample=downsampling
 )  
 
-hp2vec.build_vocab(sentences)
+vec_model.build_vocab(sentences)
 
 # Pass in all of the necessary training variables
-hp2vec.train(
+vec_model.train(
     sentences, 
-    total_examples = hp2vec.corpus_count,
-    epochs = hp2vec.iter
+    total_examples = vec_model.corpus_count,
+    epochs = vec_model.iter
 )
 
 if not os.path.exists("trained"):
     os.makedirs("trained")
 
-hp2vec.save(os.path.join("trained", "hp2vec.w2v"))
+vec_model.save(os.path.join("trained", "trained_model.w2v"))
 
-hp2vec = w2v.Word2Vec.load(os.path.join("trained", "hp2vec.w2v"))
+vec_model = w2v.Word2Vec.load(os.path.join("trained", "trained_model.w2v"))
 
 # Compress the words into a 2d Vector Space
 tsne = sklearn.manifold.TSNE(n_components=2, random_state=0)
 
-all_word_vectors_matrix = hp2vec.wv.syn0
+all_word_vectors_matrix = vec_model.wv.syn0
 
 all_word_vectors_matrix_2d = tsne.fit_transform(all_word_vectors_matrix)
 
 # Plot it!
+plt.style.use('ggplot')
+
 points = pd.DataFrame(
     [
         (word, coords[0], coords[1])
         for word, coords in [
-            (word, all_word_vectors_matrix_2d[hp2vec.wv.vocab[word].index])
-            for word in hp2vec.wv.vocab
+            (word, all_word_vectors_matrix_2d[vec_model.wv.vocab[word].index])
+            for word in vec_model.wv.vocab
         ]
     ],
     columns=["word", "x", "y"]
@@ -110,18 +112,41 @@ graph = points.plot.scatter("x", "y", s=10, figsize=(20, 12))
 harry_x = 0
 harry_y = 0
 
-for i, point in points.iterrows():
+# for i, point in points.iterrows():
     # Since matplotlib doesn't show labels automatically, we have to 
     # show it on the actual graph
-    if point.word == "Harry":
-        harry_x = point.x
-        harry_y = point.y
-    graph.text(point.x + 0.004, point.y + 0.004, point.word, fontsize = 10)
+  #   if point.word == "Harry":
+    #     harry_x = point.x
+      #   harry_y = point.y
+    # graph.text(point.x + 0.004, point.y + 0.004, point.word, fontsize = 10)
 
 print("The coordinates of Harry is: (x, y) = " + "(" + str(harry_x) + ", " + str(harry_y) + ")")
 
 print('All Done!')
 
+def plot_region(x_bounds, y_bounds):
+    slice = points[
+        (x_bounds[0] <= points.x) &
+        (points.x <= x_bounds[1]) & 
+        (y_bounds[0] <= points.y) &
+        (points.y <= y_bounds[1])
+    ]
+    
+    ax = slice.plot.scatter("x", "y", s=35, figsize=(10, 8))
+    for i, point in slice.iterrows():
+        ax.text(point.x + 0.005, point.y + 0.005, point.word, fontsize=11)
+
+
+def nearest_similarity_cosmul(start1, end1, end2):
+    similarities = vec_model.most_similar_cosmul(
+        positive=[end2, start1],
+        negative=[end1]
+    )
+    start2 = similarities[0][0]
+    print("{start1} is related to {end1}, as {start2} is related to {end2}".format(**locals()))
+    return start2
+
+# Just for better colors
 plt.show()
 
 
