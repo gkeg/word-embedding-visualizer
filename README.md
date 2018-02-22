@@ -1,7 +1,5 @@
 # Word Embedding Visualizer
 
-
-## About 
 This code repository contains a mechanism to view how words are represented "under-the-hood" in Gensim's implementation of ***Word2Vec***, which is a two-layer neural network trained to reconstruct linguistic contexts of words.
 
 ## Usage
