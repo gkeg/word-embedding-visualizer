@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # Word Embedding Visualizer
 
 This code repository contains a mechanism to view how words are represented "under-the-hood" in Gensim's implementation of ***Word2Vec***, which is a two-layer neural network trained to reconstruct linguistic contexts of words.
