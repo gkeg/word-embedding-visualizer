@@ -17,15 +17,15 @@ Note that we have provided all of the Harry Potter books inside the Corpus folde
 ## Sample Walkthrough
 ```
 Would you like to save the trained points to a path? y/n
-y
+>y
 Please enter the relative path where you would like to load from:
-./trained/saved_points
+>./trained/saved_points
 Would you like to save the trained points to a path? y/n
-n
+>n
 Would you like to label the area around a specific word in your corpus? y/n
-y
+>y
 Please enter the word:
-Ron
+>Ron
 Finding word...
 ```
 At this point, a popup box containing the full graph, as well as the selected area will appear.
